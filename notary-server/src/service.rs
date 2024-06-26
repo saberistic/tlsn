@@ -77,9 +77,9 @@ pub async fn upgrade_protocol(
     let session_id = params.session_id;
     // Fetch the configuration data from the store using the session_id
     // This also removes the configuration data from the store as each session_id can only be used once
-    let (max_sent_data, max_recv_data) =
+    let (max_sent_data, max_recv_data, message) =
         match notary_globals.store.lock().unwrap().remove(&session_id) {
-            Some(data) => (data.max_sent_data, data.max_recv_data),
+            Some(data) => (data.max_sent_data, data.max_recv_data, data.message),
             None => {
                 let err_msg = format!("Session id {} does not exist", session_id);
                 error!(err_msg);
@@ -93,6 +93,7 @@ pub async fn upgrade_protocol(
                 socket,
                 notary_globals,
                 session_id,
+                message,
                 max_sent_data,
                 max_recv_data,
             )
@@ -102,6 +103,7 @@ pub async fn upgrade_protocol(
                 stream,
                 notary_globals,
                 session_id,
+                message,
                 max_sent_data,
                 max_recv_data,
             )
@@ -154,6 +156,7 @@ pub async fn initialize(
             max_sent_data: payload.max_sent_data,
             max_recv_data: payload.max_recv_data,
             created_at: Utc::now(),
+            message: payload.message.clone(),
         },
     );
 
@@ -174,6 +177,7 @@ pub async fn notary_service<T: AsyncWrite + AsyncRead + Send + Unpin + 'static>(
     socket: T,
     signing_key: &SigningKey,
     session_id: &str,
+    message: Option<String>,
     max_sent_data: Option<usize>,
     max_recv_data: Option<usize>,
 ) -> Result<(), NotaryServerError> {
@@ -182,6 +186,7 @@ pub async fn notary_service<T: AsyncWrite + AsyncRead + Send + Unpin + 'static>(
     let mut config_builder = VerifierConfig::builder();
 
     config_builder = config_builder.id(session_id);
+    config_builder = config_builder.message(message.unwrap());
 
     if let Some(max_sent_data) = max_sent_data {
         config_builder = config_builder.max_sent_data(max_sent_data);

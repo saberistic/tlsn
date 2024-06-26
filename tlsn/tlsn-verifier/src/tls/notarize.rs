@@ -41,6 +41,7 @@ impl Verifier<Notarize> {
             sent_len,
             recv_len,
         } = self.state;
+        let message = self.config.message();
 
         let notarize_fut = async {
             let mut notarize_channel = mux_ctrl.get_channel("notarize").await?;
@@ -80,6 +81,7 @@ impl Verifier<Notarize> {
             );
 
             let signature = signer.sign(&session_header.to_bytes());
+            let m_signature = signer.sign(&message.to_bytes());
 
             #[cfg(feature = "tracing")]
             info!("Signed session header");
@@ -88,6 +90,7 @@ impl Verifier<Notarize> {
                 .send(TlsnMessage::SignedSessionHeader(SignedSessionHeader {
                     header: session_header.clone(),
                     signature: signature.into(),
+                    message_sig: m_signature.into(),
                 }))
                 .await?;
 
