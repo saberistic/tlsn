@@ -11,6 +11,7 @@ pub async fn websocket_notarize(
     socket: WebSocket,
     notary_globals: NotaryGlobals,
     session_id: String,
+    message: Option<String>,
     max_sent_data: Option<usize>,
     max_recv_data: Option<usize>,
 ) {
@@ -21,6 +22,7 @@ pub async fn websocket_notarize(
         stream,
         &notary_globals.notary_signing_key,
         &session_id,
+        message,
         max_sent_data,
         max_recv_data,
     )

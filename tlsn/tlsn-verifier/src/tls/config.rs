@@ -16,6 +16,8 @@ use tlsn_core::proof::default_cert_verifier;
 pub struct VerifierConfig {
     #[builder(setter(into))]
     id: String,
+    #[builder(setter(into))]
+    message: String,
     /// Maximum number of bytes that can be sent.
     #[builder(default = "DEFAULT_MAX_SENT_LIMIT")]
     max_sent_data: usize,
@@ -50,6 +52,11 @@ impl VerifierConfig {
     /// Returns the ID of the notarization session.
     pub fn id(&self) -> &str {
         &self.id
+    }
+
+    /// Returns the ID of the notarization session.
+    pub fn message(&self) -> &str {
+        &self.message
     }
 
     /// Returns the maximum number of bytes that can be sent.

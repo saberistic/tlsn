@@ -24,6 +24,8 @@ pub struct NotarizationSessionRequest {
     pub max_sent_data: Option<usize>,
     /// Maximum data that can be received by the prover
     pub max_recv_data: Option<usize>,
+    /// Message to sign
+    pub message: Option<String>,
 }
 
 /// Request query of the /notarize API
@@ -49,6 +51,7 @@ pub struct SessionData {
     pub max_sent_data: Option<usize>,
     pub max_recv_data: Option<usize>,
     pub created_at: DateTime<Utc>,
+    pub message: Option<String>,
 }
 
 /// Global data that needs to be shared with the axum handlers

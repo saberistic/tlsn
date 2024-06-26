@@ -20,6 +20,7 @@ use crate::{
 pub struct NotarizedSession {
     header: SessionHeader,
     signature: Option<Signature>,
+    message_sig: Option<Signature>,
     data: SessionData,
 }
 
@@ -27,10 +28,11 @@ opaque_debug::implement!(NotarizedSession);
 
 impl NotarizedSession {
     /// Create a new notarized session.
-    pub fn new(header: SessionHeader, signature: Option<Signature>, data: SessionData) -> Self {
+    pub fn new(header: SessionHeader, signature: Option<Signature>, message_sig: Option<Signature>, data: SessionData) -> Self {
         Self {
             header,
             signature,
+            message_sig,
             data,
         }
     }
@@ -57,6 +59,11 @@ impl NotarizedSession {
     /// Returns the signature for the session header, if the notary signed it
     pub fn signature(&self) -> &Option<Signature> {
         &self.signature
+    }
+
+    /// Returns the signature for the session header, if the notary signed it
+    pub fn message_sig(&self) -> &Option<Signature> {
+        &self.message_sig
     }
 
     /// Returns the [SessionData]

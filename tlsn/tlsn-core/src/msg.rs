@@ -27,6 +27,8 @@ pub struct SignedSessionHeader {
     pub header: SessionHeader,
     /// The notary's signature
     pub signature: Signature,
+    /// The session message signature
+    pub message_sig: Signature,
 }
 
 /// Information about the values the prover wants to prove
